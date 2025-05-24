@@ -16,7 +16,7 @@ export interface Sprites {
   }
 }
 
-export interface PokemonList {
+export interface Pokemon {
   name: string
   url: string
   favorite: boolean

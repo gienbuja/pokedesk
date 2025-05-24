@@ -1,32 +1,33 @@
 <template>
   <ul class="list-poke">
-    <li v-for="pokemon in pokemons" :key="pokemon.name">
-      <span @click="handlePokemonClick(pokemon)">
-        {{ pokemon.name }}
-      </span>
-      <button @click.stop="handleToggleFavorite(pokemon)">
-        <FavoriteRoundedIcon :favorite="pokemon.favorite" />
-      </button>
-    </li>
+    <ListItemPoke v-for="pokemon in pokemons" :key="pokemon.name" :pokemon="pokemon" :is-favorite="isFavorite(pokemon)"
+      @toggle-favorite="handleToggleFavorite" @pokemon-click="handlePokemonClick" />
   </ul>
 </template>
 <script setup lang="ts">
-import type { PokemonList } from '@/types';
-import FavoriteRoundedIcon from './icons/FavoriteRoundedIcon.vue';
+import type { Pokemon } from '@/types';
+import { usePokemonStore } from '@/stores/pokemon.store';
+import ListItemPoke from './ListItemPoke.vue';
 
-const pokemons = defineModel<PokemonList[]>('pokemons');
+const pokemonStore = usePokemonStore();
+
+const pokemons = defineModel<Pokemon[]>('pokemons');
 
 const emit = defineEmits<{
-  (e: 'toggleFavorite', pokemon: PokemonList): void,
-  (e: 'pokemonClick', pokemon: PokemonList): void
+  (e: 'toggleFavorite', pokemon: Pokemon): void,
+  (e: 'pokemonClick', pokemon: Pokemon): void
 }>();
 
-const handlePokemonClick = (pokemon: PokemonList) => {
+const handlePokemonClick = (pokemon: Pokemon) => {
   emit('pokemonClick', pokemon);
 };
 
-const handleToggleFavorite = (pokemon: PokemonList) => {
+const handleToggleFavorite = (pokemon: Pokemon) => {
   emit('toggleFavorite', pokemon);
+};
+
+const isFavorite = (pokemon: Pokemon) => {
+  return pokemonStore.isFavorite(pokemon.name);
 };
 </script>
 
@@ -38,38 +39,5 @@ const handleToggleFavorite = (pokemon: PokemonList) => {
   width: 100%;
   height: 100%;
   overflow-y: scroll;
-}
-
-.list-poke li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: 60px;
-  padding-left: 20px;
-  background: #FFFFFF;
-  border-radius: 5px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-
-.list-poke li span {
-  font-family: Lato;
-  font-weight: 500;
-  font-size: 22px;
-  line-height: 100%;
-  letter-spacing: 0%;
-  vertical-align: middle;
-  text-transform: capitalize;
-  color: #353535;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.list-poke li button {
-  width: 44px;
-  height: 44px;
 }
 </style>

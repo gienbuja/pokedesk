@@ -1,68 +1,38 @@
 <script setup lang="ts">
-import BarPoke from '@/components/BarPoke.vue';
+import BarPoke from '@/components/BottonBarPoke.vue';
 import LoaderIcon from '@/components/icons/LoaderIcon.vue';
 import ListPoke from '@/components/ListPoke.vue';
 import ModalPoke from '@/components/ModalPoke.vue';
 import SearchPoke from '@/components/SearchPoke.vue';
-import type { PokemonList } from '@/types';
+import type { Pokemon } from '@/types';
 import { computed, onMounted, ref } from 'vue';
+import { usePokemonStore } from '@/stores/pokemon.store';
 
 const loading = ref(0);
 const inputSearch = ref('');
 const allSelected = ref(true);
-const pokemonDetails = ref<PokemonList | null>(null);
-const allPokemons = ref<Array<PokemonList>>([]);
+const pokemonDetails = ref<Pokemon | null>(null);
+const allPokemons = ref<Array<Pokemon>>([]);
 
-const fetchAllPokemons = async () => {
-  try {
-    let url = 'https://pokeapi.co/api/v2/pokemon';
+const pokemonStore = usePokemonStore();
 
-    while (url) {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      // Inicializar cada Pokémon con favorite: false
-      allPokemons.value = [
-        ...allPokemons.value,
-        ...data.results.map((pokemon: { name: string, url: string }) => ({
-          ...pokemon,
-          favorite: false // Inicializar como no favorito por defecto
-        }))
-      ];
-
-      // Calcular porcentaje basado en count
-      if (data.count) {
-        loading.value = Math.min(
-          Math.round((allPokemons.value.length / data.count) * 100),
-          100
-        );
+const simulateLoading = () => {
+  const interval = setInterval(() => {
+    if (loading.value < 100) {
+      loading.value += Math.floor(Math.random() * 10) + 1;
+      if (loading.value > 100) {
+        loading.value = 100;
       }
-
-      url = data.next; // Continuar con la siguiente página
+    } else {
+      clearInterval(interval);
     }
-
-  } catch (error) {
-    console.error('Error:', error);
-    loading.value = -1; // Indicar error
-  }
+  }, 200);
 };
 
-const fetchPokemonDetails = async (pokemon: PokemonList) => {
+const fetchPokemonDetails = async (pokemon: Pokemon) => {
   try {
-    const index = allPokemons.value.findIndex(p => p.name === pokemon.name);
-    if (index !== -1 && allPokemons.value[index].sprites) {
-      return allPokemons.value[index];
-    }
-    const response = await fetch(pokemon.url);
-    const data = await response.json();
-
-    if (index !== -1) {
-      allPokemons.value[index] = {
-        ...allPokemons.value[index],
-        ...data
-      };
-    }
-    return allPokemons.value[index];
+    const details = await pokemonStore.updatePokemonDetails(pokemon.url);
+    return details;
   } catch (error) {
     console.error('Error:', error);
   }
@@ -84,22 +54,20 @@ const pokemons = computed(() => {
   return filteredPokemons;
 });
 
-onMounted(() => {
-  fetchAllPokemons();
+onMounted(async () => {
+  simulateLoading()
+  await pokemonStore.loadPokemons();
+  allPokemons.value = pokemonStore.pokemons;
 })
 
-function toggleFavorite(pokemon: PokemonList) {
-  const index = allPokemons.value.findIndex(p => p.name === pokemon.name);
-  if (index !== -1) {
-    allPokemons.value[index].favorite = !allPokemons.value[index].favorite;
-  }
+function toggleFavorite(pokemon: Pokemon) {
+  pokemonStore.toggleFavorite(pokemon.name);
 }
 
-async function pokemonClick(pokemon: PokemonList) {
+async function pokemonClick(pokemon: Pokemon) {
   const details = await fetchPokemonDetails(pokemon);
   if (details) {
     pokemonDetails.value = details;
-    console.log(pokemonDetails.value);
   }
 }
 

@@ -6,48 +6,14 @@
       </button>
 
       <div class="pokemon-details">
-        <BackgroundPoke></BackgroundPoke>
-        <span class="image-container">
-          <img :src="pokemon.sprites.other['official-artwork'].front_shiny" alt="pokemon image">
-        </span>
-        <ul>
-          <li>
-            <span>
-              Name:
-            </span>
-            <span>
-              {{ pokemon.name }}
-            </span>
-          </li>
-          <li>
-            <span>
-              Weight:
-            </span>
-            <span>
-              {{ pokemon.weight }}
-            </span>
-          </li>
-          <li>
-            <span>
-              Height:
-            </span>
-            <span>
-              {{ pokemon.height }}
-            </span>
-          </li>
-          <li>
-            <span>
-              Types:
-            </span>
-            <span>
-              {{pokemon.types.map(type => type.type.name).join(', ')}}
-            </span>
-          </li>
-        </ul>
+        <BackgroundPoke />
+        <PokemonImage :pokemon="pokemon" />
+        <PokemonDetailsList :pokemon="pokemon" />
+
         <span class="footer-modal">
-          <BtnPoke label="Share to my friends"></BtnPoke>
+          <BtnPoke label="Share to my friends" />
           <button @click.stop="handleToggleFavorite(pokemon)">
-            <FavoriteRoundedIcon :favorite="pokemon.favorite" />
+            <FavoriteRoundedIcon :favorite="isFavorite(pokemon)" />
           </button>
         </span>
       </div>
@@ -56,28 +22,37 @@
 </template>
 
 <script setup lang="ts">
-import type { PokemonList } from '@/types';
+import type { Pokemon } from '@/types';
 import CloseIcon from './icons/CloseIcon.vue';
 import BackgroundPoke from './BackgroundPoke.vue';
+import PokemonImage from './PokemonImage.vue';
+import PokemonDetailsList from './PokemonDetailsList.vue';
 import BtnPoke from './BtnPoke.vue';
 import FavoriteRoundedIcon from './icons/FavoriteRoundedIcon.vue';
+import { usePokemonStore } from '@/stores/pokemon.store';
+
+const pokemonStore = usePokemonStore()
 
 
 defineProps<{
-  pokemon: PokemonList | null
+  pokemon: Pokemon | null
 }>()
 
 const emit = defineEmits<{
   (e: 'closeModal'): void,
-  (e: 'toggleFavorite', pokemon: PokemonList): void,
+  (e: 'toggleFavorite', pokemon: Pokemon): void,
 }>();
 
 const closeModal = () => {
   emit('closeModal');
 }
-const handleToggleFavorite = (pokemon: PokemonList) => {
+const handleToggleFavorite = (pokemon: Pokemon) => {
   emit('toggleFavorite', pokemon);
 }
+
+const isFavorite = (pokemon: Pokemon) => {
+  return pokemonStore.isFavorite(pokemon.name);
+};
 </script>
 
 <style scoped>
@@ -121,49 +96,6 @@ const handleToggleFavorite = (pokemon: PokemonList) => {
 
 .pokemon-details {
   text-align: left;
-}
-
-.image-container {
-  width: 100%;
-  height: 180px;
-  position: absolute;
-  top: 20px;
-}
-
-.image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.pokemon-details ul {
-  list-style: none;
-  padding: 20px;
-  margin: 0;
-}
-
-.pokemon-details ul li {
-  border-bottom: 1px solid #E8E8E8;
-  padding: 10px 0;
-}
-
-.pokemon-details ul li span {
-  font-family: Lato;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 150%;
-  letter-spacing: 0%;
-  height: 27px;
-}
-
-.pokemon-details ul li span:last-child {
-  font-family: Lato;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 150%;
-  letter-spacing: 0%;
-  text-transform: capitalize;
-  height: 27px;
 }
 
 .footer-modal {
