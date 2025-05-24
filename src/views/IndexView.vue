@@ -7,6 +7,7 @@ import SearchPoke from '@/components/SearchPoke.vue';
 import type { Pokemon } from '@/types';
 import { computed, onMounted, ref } from 'vue';
 import { usePokemonStore } from '@/stores/pokemon.store';
+import EmptyPoke from '@/components/EmptyPoke.vue';
 
 const loading = ref(0);
 const inputSearch = ref('');
@@ -75,6 +76,11 @@ function closeModal() {
   pokemonDetails.value = null;
 }
 
+function clearFilters() {
+  inputSearch.value = '';
+  allSelected.value = true;
+}
+
 </script>
 
 <template>
@@ -87,7 +93,8 @@ function closeModal() {
   <div v-else class="index-container">
     <div class="index-view">
       <SearchPoke v-model="inputSearch" />
-      <ListPoke :pokemons="pokemons" @toggle-favorite="toggleFavorite" @pokemonClick="pokemonClick" />
+      <EmptyPoke v-if="pokemons.length == 0" @clear-filters="clearFilters" />
+      <ListPoke v-else :pokemons="pokemons" @toggle-favorite="toggleFavorite" @pokemonClick="pokemonClick" />
     </div>
     <BarPoke v-model:allSelected="allSelected" />
   </div>

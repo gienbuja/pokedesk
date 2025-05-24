@@ -1,5 +1,6 @@
 <template>
-  <button class="btn-poke" @click="$emit('click', $event)">
+  <button class="btn-poke" @click="$emit('click', $event)"
+    :style="isActive ? 'background-color: #F22539;' : 'background-color: #BFBFBF;'">
     <slot name="icon"></slot>
     <span>
       {{ label }}
@@ -18,13 +19,16 @@ defineProps({
     type: String,
     default: null,
   },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
 });
 
 </script>
 
 <style scoped>
 .btn-poke {
-  background-color: #F22539;
   height: 44px;
   border-radius: 60px;
   padding-top: 11px;

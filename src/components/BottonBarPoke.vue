@@ -1,12 +1,12 @@
 <template>
   <div class="bottom-bar">
     <span>
-      <BtnPoke label="All" @click="allSelected = true">
+      <BtnPoke label="All" :is-active="allSelected" @click="allSelected = true">
         <template #icon>
           <AllIcon />
         </template>
       </BtnPoke>
-      <BtnPoke label="Favorites" @click="allSelected = false">
+      <BtnPoke label="Favorites" :is-active="!allSelected" @click="allSelected = false">
         <template #icon>
           <FavoriteIcon />
         </template>
