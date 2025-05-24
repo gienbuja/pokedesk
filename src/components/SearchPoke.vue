@@ -1,7 +1,7 @@
 <template>
   <div class="layaout-search">
     <SearchIcon class="icon" />
-    <input class="input" :value="modelValue"
+    <input class="input" :value="modelValue" name="pokemon" id="pokemon"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" placeholder="Search">
   </div>
 </template>

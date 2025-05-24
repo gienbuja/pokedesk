@@ -48,7 +48,7 @@ const pokemons = computed(() => {
   }
 
   if (!allSelected.value) {
-    filteredPokemons = filteredPokemons.filter(pokemon => pokemon.favorite);
+    filteredPokemons = filteredPokemons.filter(pokemon => pokemonStore.isFavorite(pokemon.name));
   }
 
   return filteredPokemons;
