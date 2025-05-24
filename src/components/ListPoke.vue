@@ -1,11 +1,11 @@
 <template>
   <ul class="list-poke">
     <li v-for="pokemon in pokemons" :key="pokemon.name">
-      <span>
+      <span @click="handlePokemonClick(pokemon)">
         {{ pokemon.name }}
       </span>
-      <button @click="emit('toggleFavorite', pokemon)">
-        <FavoriteRoundedIcon :favorite="pokemon.favorite"></FavoriteRoundedIcon>
+      <button @click.stop="handleToggleFavorite(pokemon)">
+        <FavoriteRoundedIcon :favorite="pokemon.favorite" />
       </button>
     </li>
   </ul>
@@ -17,8 +17,17 @@ import FavoriteRoundedIcon from './icons/FavoriteRoundedIcon.vue';
 const pokemons = defineModel<PokemonList[]>('pokemons');
 
 const emit = defineEmits<{
-  (e: 'toggleFavorite', pokemon: PokemonList): void
-}>()
+  (e: 'toggleFavorite', pokemon: PokemonList): void,
+  (e: 'pokemonClick', pokemon: PokemonList): void
+}>();
+
+const handlePokemonClick = (pokemon: PokemonList) => {
+  emit('pokemonClick', pokemon);
+};
+
+const handleToggleFavorite = (pokemon: PokemonList) => {
+  emit('toggleFavorite', pokemon);
+};
 </script>
 
 <style scoped>
@@ -28,7 +37,7 @@ const emit = defineEmits<{
   gap: 10px;
   width: 100%;
   height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 .list-poke li {
@@ -53,11 +62,14 @@ const emit = defineEmits<{
   vertical-align: middle;
   text-transform: capitalize;
   color: #353535;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .list-poke li button {
   width: 44px;
   height: 44px;
-
 }
 </style>

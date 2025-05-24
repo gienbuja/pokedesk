@@ -2,13 +2,15 @@
 import BarPoke from '@/components/BarPoke.vue';
 import LoaderIcon from '@/components/icons/LoaderIcon.vue';
 import ListPoke from '@/components/ListPoke.vue';
+import ModalPoke from '@/components/ModalPoke.vue';
 import SearchPoke from '@/components/SearchPoke.vue';
 import type { PokemonList } from '@/types';
 import { computed, onMounted, ref } from 'vue';
+
 const loading = ref(0);
 const inputSearch = ref('');
 const allSelected = ref(true);
-
+const pokemonDetails = ref<PokemonList | null>(null);
 const allPokemons = ref<Array<PokemonList>>([]);
 
 const fetchAllPokemons = async () => {
@@ -45,17 +47,36 @@ const fetchAllPokemons = async () => {
   }
 };
 
+const fetchPokemonDetails = async (pokemon: PokemonList) => {
+  try {
+    const index = allPokemons.value.findIndex(p => p.name === pokemon.name);
+    if (index !== -1 && allPokemons.value[index].sprites) {
+      return allPokemons.value[index];
+    }
+    const response = await fetch(pokemon.url);
+    const data = await response.json();
+
+    if (index !== -1) {
+      allPokemons.value[index] = {
+        ...allPokemons.value[index],
+        ...data
+      };
+    }
+    return allPokemons.value[index];
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
 const pokemons = computed(() => {
   let filteredPokemons = allPokemons.value;
 
-  // Filtrar por búsqueda si hay texto
   if (inputSearch.value) {
     filteredPokemons = filteredPokemons.filter(pokemon =>
       pokemon.name.toLowerCase().includes(inputSearch.value.toLowerCase())
     );
   }
 
-  // Filtrar por favoritos si allSelected es false
   if (!allSelected.value) {
     filteredPokemons = filteredPokemons.filter(pokemon => pokemon.favorite);
   }
@@ -68,12 +89,24 @@ onMounted(() => {
 })
 
 function toggleFavorite(pokemon: PokemonList) {
-  console.log(pokemon);
   const index = allPokemons.value.findIndex(p => p.name === pokemon.name);
   if (index !== -1) {
     allPokemons.value[index].favorite = !allPokemons.value[index].favorite;
   }
 }
+
+async function pokemonClick(pokemon: PokemonList) {
+  const details = await fetchPokemonDetails(pokemon);
+  if (details) {
+    pokemonDetails.value = details;
+    console.log(pokemonDetails.value);
+  }
+}
+
+function closeModal() {
+  pokemonDetails.value = null;
+}
+
 </script>
 
 <template>
@@ -86,10 +119,11 @@ function toggleFavorite(pokemon: PokemonList) {
   <div v-else class="index-container">
     <div class="index-view">
       <SearchPoke v-model="inputSearch" />
-      <ListPoke v-model:pokemons="pokemons" @toggle-favorite="toggleFavorite" />
+      <ListPoke :pokemons="pokemons" @toggle-favorite="toggleFavorite" @pokemonClick="pokemonClick" />
     </div>
     <BarPoke v-model:allSelected="allSelected" />
   </div>
+  <ModalPoke :pokemon="pokemonDetails" @close-modal="closeModal" @toggle-favorite="toggleFavorite" />
 </template>
 
 <style scoped>
