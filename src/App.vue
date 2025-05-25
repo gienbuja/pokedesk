@@ -11,6 +11,10 @@ onMounted(() => {
     })
   }
 })
+onMounted(() => {
+  // Prepara el api para reproducir sonidos
+  fetch(`https://pokedex-api-sounds.onrender.com/`);
+})
 </script>
 
 <template>

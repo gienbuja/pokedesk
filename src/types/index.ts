@@ -16,13 +16,18 @@ export interface Sprites {
   }
 }
 
+export interface Cries {
+  latest: string
+  legacy: string
+}
+
 export interface Pokemon {
   name: string
   url: string
-  favorite?: boolean | undefined
   id: number
   weight: number
   height: number
   types: Type[]
   sprites: Sprites
+  cries: Cries
 }

@@ -2,24 +2,19 @@ import { defineStore } from 'pinia'
 import { PokemonService } from '@/services/pokemon.service'
 import type { Pokemon } from '@/types'
 
-/**
- * Store para manejar el estado y las acciones relacionadas con los Pokémon
- */
 export const usePokemonStore = defineStore('pokemon', {
   state: () => ({
-    /** Lista de Pokémon cargados */
     pokemons: [] as Pokemon[],
-    /** Indica si se están cargando los Pokémon */
     isLoading: false,
-    /** Lista de nombres de Pokémon favoritos */
-    favorites: JSON.parse(localStorage.getItem('pokemon_favorites') || '[]') as string[],
+    favorites: PokemonService.getFavorites(),
   }),
 
   actions: {
     /**
-     * Carga todos los Pokémon desde el servicio
+     * Carga todos los Pokémon desde la API o caché
+     * @returns {Promise<void>}
      */
-    async loadPokemons() {
+    async loadPokemons(): Promise<void> {
       this.isLoading = true
       try {
         this.pokemons = await PokemonService.fetchAllPokemons()
@@ -30,13 +25,12 @@ export const usePokemonStore = defineStore('pokemon', {
 
     /**
      * Actualiza los detalles de un Pokémon específico
-     * @param pokemonUrl - URL del Pokémon a actualizar
-     * @returns Detalles actualizados del Pokémon
+     * @param {string} pokemonUrl - URL del Pokémon
+     * @returns {Promise<Pokemon>} Pokémon actualizado
      */
-    async updatePokemonDetails(pokemonUrl: string) {
+    async updatePokemonDetails(pokemonUrl: string): Promise<Pokemon> {
       this.isLoading = true
       const data = await PokemonService.fetchAndCachePokemonDetails(pokemonUrl)
-
       const index = this.pokemons.findIndex((p) => p.url === pokemonUrl)
       if (index !== -1) {
         this.pokemons[index] = { ...this.pokemons[index], ...data }
@@ -45,58 +39,42 @@ export const usePokemonStore = defineStore('pokemon', {
       return data
     },
 
-    // /**
-    //  * Actualiza un Pokémon en el store con nuevos datos
-    //  * @param pokemonUrl - URL del Pokémon a actualizar
-    //  * @param data - Nuevos datos del Pokémon
-    //  */
-    // updatePokemonInStore(pokemonUrl: string, data: Pokemon) {
-    //   const index = this.pokemons.findIndex((p) => p.url === pokemonUrl)
-    //   if (index !== -1) {
-    //     this.pokemons[index] = { ...this.pokemons[index], ...data }
-    //   }
-    // },
-
     /**
-     * Alterna un Pokémon como favorito
-     * @param pokemonName - Nombre del Pokémon a marcar/desmarcar como favorito
+     * Alterna el estado de favorito de un Pokémon
+     * @param {string} pokemonName - Nombre del Pokémon
      */
-    toggleFavorite(pokemonName: string) {
+    toggleFavorite(pokemonName: string): void {
       const index = this.favorites.indexOf(pokemonName)
-
       if (index === -1) {
         this.favorites.push(pokemonName)
       } else {
         this.favorites.splice(index, 1)
       }
-
-      localStorage.setItem('pokemon_favorites', JSON.stringify(this.favorites))
+      PokemonService.setFavorites(this.favorites)
     },
 
     /**
      * Verifica si un Pokémon es favorito
-     * @param pokemonName - Nombre del Pokémon a verificar
-     * @returns true si el Pokémon es favorito, false en caso contrario
+     * @param {string} pokemonName - Nombre del Pokémon
+     * @returns {boolean} true si es favorito
      */
     isFavorite(pokemonName: string): boolean {
       return this.favorites.includes(pokemonName)
     },
 
     /**
-     * Obtiene la lista de Pokémon favoritos con sus detalles completos
-     * @returns Promise con la lista de Pokémon favoritos y sus detalles
+     * Obtiene los Pokémon favoritos con sus detalles completos
+     * @returns {Promise<Pokemon[]>} Lista de Pokémon favoritos
      */
     async getFavoritePokemonsWithDetails(): Promise<Pokemon[]> {
       this.isLoading = true
       const favoritePokemons: Pokemon[] = []
 
-      // Obtener los detalles de cada Pokémon favorito
       for (const namePokemon of this.favorites) {
         try {
-          const details = await PokemonService.getPokemonByName(namePokemon)
-          favoritePokemons.push(details)
+          favoritePokemons.push(await PokemonService.getPokemonByName(namePokemon))
         } catch (error) {
-          console.error(`Error obteniendo detalles de ${namePokemon}:`, error)
+          console.error(`Error obteniendo ${namePokemon}:`, error)
         }
       }
       this.isLoading = false

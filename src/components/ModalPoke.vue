@@ -30,8 +30,10 @@ import PokemonDetailsList from './PokemonDetailsList.vue';
 import BtnPoke from './BtnPoke.vue';
 import FavoriteRoundedIcon from './icons/FavoriteRoundedIcon.vue';
 import { usePokemonStore } from '@/stores/pokemon.store';
+// import { ref } from 'vue';
 
 const pokemonStore = usePokemonStore()
+// const pokemonCry = ref<HTMLAudioElement | null>(null)
 
 
 defineProps<{
@@ -53,6 +55,7 @@ const handleToggleFavorite = (pokemon: Pokemon) => {
 const isFavorite = (pokemon: Pokemon) => {
   return pokemonStore.isFavorite(pokemon.name);
 };
+
 </script>
 
 <style scoped>
@@ -105,5 +108,15 @@ const isFavorite = (pokemon: Pokemon) => {
   padding-right: 20px;
   height: 44px;
   gap: 10px;
+}
+
+.cries-button {
+  position: absolute;
+  top: 50px;
+  right: 15px;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  z-index: 10;
 }
 </style>

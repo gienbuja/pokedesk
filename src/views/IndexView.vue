@@ -10,6 +10,7 @@ import { computed, onMounted, ref } from 'vue';
 import { usePokemonStore } from '@/stores/pokemon.store';
 import EmptyPoke from '@/components/EmptyPoke.vue';
 import DynamicBackground from '@/components/DynamicBackground.vue';
+import { playPokemonCry, simulateLoading } from '@/services/ui.service';
 
 // Variables reactivas
 const loading = ref(0);
@@ -22,32 +23,7 @@ const favoritePokemons = ref<Array<Pokemon>>([]);
 // Store de Pokémon
 const pokemonStore = usePokemonStore();
 
-/**
- * Simula el proceso de carga con un intervalo
- */
-const simulateLoading = () => {
-  const intervalId = setInterval(() => {
-    loading.value += 10;
-    if (loading.value >= 100) {
-      loading.value = 100;
-      clearInterval(intervalId);
-    }
-  }, 1200);
-};
-
-/**
- * Obtiene los detalles de un Pokémon específico
- * @param pokemon - Pokémon del cual obtener los detalles
- * @returns Detalles del Pokémon
- */
-const fetchPokemonDetails = async (pokemon: Pokemon) => {
-  try {
-    const details = await pokemonStore.updatePokemonDetails(pokemon.url);
-    return details;
-  } catch (error) {
-    console.error('Error:', error);
-  }
-};
+simulateLoading(loading);
 
 /**
  * Filtra los Pokémon según la búsqueda y selección
@@ -71,11 +47,9 @@ const pokemons = computed(() => {
 
 // Hook de ciclo de vida: cuando el componente se monta
 onMounted(async () => {
-  simulateLoading()
   favoritePokemons.value = await pokemonStore.getFavoritePokemonsWithDetails();
   await pokemonStore.loadPokemons();
   allPokemons.value = pokemonStore.pokemons;
-  console.log(allPokemons.value);
 })
 
 /**
@@ -91,9 +65,10 @@ function toggleFavorite(pokemon: Pokemon) {
  * @param pokemon - Pokémon seleccionado
  */
 async function pokemonClick(pokemon: Pokemon) {
-  const details = await fetchPokemonDetails(pokemon);
+  const details = await pokemonStore.updatePokemonDetails(pokemon.url);
   if (details) {
     pokemonDetails.value = details;
+    playPokemonCry(details.id);
   }
 }
 

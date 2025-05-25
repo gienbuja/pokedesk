@@ -14,16 +14,17 @@ export const PokemonService = {
   /** Clave para almacenar los detalles de Pokémon en caché */
   CACHE_DETAILS_KEY: 'pokedex_pokemon_details',
 
+  MAX_CACHE_ITEMS: 50,
+
   /**
-   * Obtiene todos los Pokémon disponibles desde la API
-   * @returns Promise con la lista de Pokémon
-   * @description Maneja caché local y paginación automática
+   * Obtiene todos los Pokémon disponibles desde la API o caché
+   * @returns {Promise<Pokemon[]>} Lista de Pokémon
    */
-  fetchAllPokemons: async function () {
+  fetchAllPokemons: async function (): Promise<Pokemon[]> {
     const cached = this.getFromCache(this.CACHE_KEY)
     if (cached) {
-      console.log('Pokémon obtenidos desde caché')
-      return cached
+      // console.log('Pokémon obtenidos desde caché')
+      return cached as Pokemon[]
     }
 
     let allPokemons: Pokemon[] = []
@@ -42,20 +43,18 @@ export const PokemonService = {
   },
 
   /**
-   * Obtiene los detalles de un Pokémon específico desde la API
-   * @param url - URL del Pokémon a consultar
-   * @returns Promise con los detalles del Pokémon
-   * @description Maneja caché local para evitar peticiones repetidas
+   * Obtiene detalles de un Pokémon específico
+   * @param {string} url - URL del Pokémon
+   * @returns {Promise<Pokemon>} Detalles del Pokémon
    */
-  fetchAndCachePokemonDetails: async function (url: string) {
+  fetchAndCachePokemonDetails: async function (url: string): Promise<Pokemon> {
     try {
-      // Extraer nombre de Pokémon de la URL para usar como clave de caché
       const pokemonName = this.extractPokemonNameFromUrl(url)
 
       // Primero buscar en caché
       const cachedData = this.getFromCache(pokemonName)
       if (cachedData) {
-        return cachedData
+        return cachedData as Pokemon
       }
 
       // Si no está en caché, hacer la petición
@@ -64,7 +63,7 @@ export const PokemonService = {
 
       const data = await response.json()
       const pokemonDetails = this.mapPokemonData(data)
-
+      pokemonDetails.url = url
       // Guardar en caché
       this.saveToCache(pokemonName, pokemonDetails)
 
@@ -75,12 +74,17 @@ export const PokemonService = {
     }
   },
 
-  getPokemonByName: async function (name: string) {
+  /**
+   * Busca un Pokémon por nombre
+   * @param {string} name - Nombre del Pokémon
+   * @returns {Promise<Pokemon>} Detalles del Pokémon
+   */
+  getPokemonByName: async function (name: string): Promise<Pokemon> {
     const normalizedName = name.toLowerCase().trim()
 
     const cachedData = this.getFromCache(normalizedName)
     if (cachedData) {
-      return cachedData
+      return cachedData as Pokemon
     }
 
     try {
@@ -99,6 +103,11 @@ export const PokemonService = {
     }
   },
 
+  /**
+   * Mapea datos de la API a nuestro modelo
+   * @param {Pokemon} data - Datos crudos de la API
+   * @returns {Pokemon} Pokémon mapeado
+   */
   mapPokemonData: function (data: Pokemon): Pokemon {
     return {
       id: data.id,
@@ -108,10 +117,16 @@ export const PokemonService = {
       height: data.height,
       weight: data.weight,
       url: data.url,
+      cries: data.cries,
     }
   },
 
-  getFromCache: function (key: string) {
+  /**
+   * Obtiene datos de caché
+   * @param {string} key - Clave de caché
+   * @returns {Pokemon|Pokemon[]|null|string[]} Datos en caché o null
+   */
+  getFromCache: function (key: string): Pokemon | Pokemon[] | null | string[] {
     const cached = localStorage.getItem(`pokemon_${key}`)
     if (!cached) return null
 
@@ -126,35 +141,66 @@ export const PokemonService = {
     return data
   },
 
-  saveToCache: function (key: string, data: Pokemon | Pokemon[]) {
+  /**
+   * Guarda datos en caché
+   * @param {string} key - Clave de caché
+   * @param {Pokemon|Pokemon[]|string[]} data - Datos a guardar
+   * @returns {void}
+   */
+  saveToCache: function (key: string, data: Pokemon | Pokemon[] | string[]): void {
     const cacheData = {
       data,
       timestamp: Date.now(),
     }
-    localStorage.setItem(`pokemon_${key}`, JSON.stringify(cacheData))
+    try {
+      localStorage.setItem(`pokemon_${key}`, JSON.stringify(cacheData))
+    } catch (error) {
+      // Si la caché está llena, limpiar y volver a intentar
+      if (error instanceof DOMException && error.name === 'QuotaExceededError') {
+        this.clearCache()
+        localStorage.setItem(`pokemon_${key}`, JSON.stringify(cacheData))
+      }
+    }
   },
 
-  clearCache: function () {
-    // Limpiar solo las keys de Pokémon
+  /**
+   * Limipa la caché sin afectar la caché de favoritos
+   * @returns {void}
+   */
+  clearCache(): void {
     Object.keys(localStorage)
-      .filter((key) => key.startsWith('pokemon_'))
+      .filter((key) => key.startsWith('pokemon_') && key !== 'pokemon_favorites')
       .forEach((key) => localStorage.removeItem(key))
   },
+
+  /**
+   * Extrae el nombre del Pokémon de una URL
+   * @param {string} url - URL del Pokémon
+   * @returns {string} Nombre del Pokémon
+   * @example
+   * extractPokemonNameFromUrl('@example.com/pokemon/123/') // '123'
+   */
 
   extractPokemonNameFromUrl: function (url: string): string {
     const matches = url.match(/\/pokemon\/([^\/]+)\/?$/)
     return matches ? matches[1].toLowerCase() : ''
   },
-  /**
-   * Actualiza la caché de detalles de un Pokémon específico
-   * @param url - URL del Pokémon a actualizar
-   * @param data - Nuevos datos del Pokémon
-   */
-  updatePokemonCache: function (url: string, data: Pokemon) {
-    const cachedDetails = localStorage.getItem(this.CACHE_DETAILS_KEY)
-    const cachedData = cachedDetails ? JSON.parse(cachedDetails) : {}
 
-    cachedData[url] = data
-    localStorage.setItem(this.CACHE_DETAILS_KEY, JSON.stringify(cachedData))
+  /**
+   * Guarda la lista de favoritos en el localStorage
+   * @param favorites
+   * @returns {void}
+   */
+  setFavorites(favorites: string[]): void {
+    console.log('Guardando favoritos en localStorage:', favorites)
+    this.saveToCache('favorites', favorites)
+  },
+
+  /**
+   * Obtiene la lista de favoritos del localStorage
+   * @returns {string[]} Lista de favoritos
+   */
+  getFavorites: function (): string[] {
+    return (this.getFromCache('favorites') as string[]) || []
   },
 }
