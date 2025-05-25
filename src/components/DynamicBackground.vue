@@ -1,10 +1,8 @@
 <template>
   <div class="dynamic-background">
-    <!-- Pokémon de fondo -->
     <img v-for="(pokemon, index) in pokemons" :key="'bg-' + index" :src="pokemon.image" :style="pokemonStyle(pokemon)"
       class="pokemon-bg" />
 
-    <!-- Pokebola centrada -->
     <div class="pokeball-container">
       <svg width="106" height="106" viewBox="0 0 106 106" fill="none" xmlns="http://www.w3.org/2000/svg"
         class="pokeball-animation">
@@ -37,6 +35,7 @@ interface PokemonImage {
   rotation: number;
   opacity: number;
   zIndex: number;
+  mirror: number;
 }
 
 const pokemons = ref<PokemonImage[]>([]);
@@ -47,7 +46,6 @@ const props = defineProps({
     required: true
   }
 })
-// Obtener URLs de imágenes de la API
 const getPokemonImages = async () => {
   return props.favoritePokemons.map(pokemon => pokemon.sprites.other['official-artwork'].front_shiny);
 };
@@ -55,7 +53,7 @@ const getPokemonImages = async () => {
 const pokemonStyle = (pokemon: PokemonImage) => ({
   top: `${pokemon.top}px`,
   left: `${pokemon.left}px`,
-  transform: `rotate(${pokemon.rotation}deg)`,
+  transform: `rotate(${pokemon.rotation}deg) scaleX(${pokemon.mirror})`,
   opacity: pokemon.opacity,
   zIndex: pokemon.zIndex
 });
@@ -68,27 +66,25 @@ const addRandomPokemon = async () => {
       image: images[Math.floor(Math.random() * images.length)],
       top: Math.random() * window.innerHeight,
       left: Math.random() * window.innerWidth,
-      rotation: Math.random() * 360,
-      opacity: 0.5 + Math.random() * 0.5,
-      zIndex: Math.floor(Math.random() * 5) // Z-index bajo para que estén detrás
+      rotation: Math.random() * 30,
+      mirror: [1, 0, -1][Math.floor(Math.random() * 3)],
+      // opacity: 0.5 + Math.random() * 0.5,
+      zIndex: Math.floor(Math.random() * 5)
     };
 
     pokemons.value.push(newPokemon);
 
-    if (pokemons.value.length > 10) {
-      pokemons.value.shift();
-    }
+    // if (pokemons.value.length > 10) {
+    //   pokemons.value.shift();
+    // }
   }
 };
 
 onMounted(() => {
-  // Cargar imágenes iniciales
   for (let i = 0; i < 3; i++) {
     addRandomPokemon();
   }
-
-  // Configurar intervalo para añadir más Pokémon
-  setInterval(addRandomPokemon, 1000);
+  setInterval(addRandomPokemon, 500);
 });
 </script>
 
