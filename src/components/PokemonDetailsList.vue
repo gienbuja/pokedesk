@@ -22,7 +22,7 @@ defineProps<{
     </li>
     <li>
       <span>Types:</span>
-      <span>{{ pokemon.types.map(type => type.type.name).join(', ') }}</span>
+      <span>{{pokemon.types.map(type => type.type.name).join(', ')}}</span>
     </li>
   </ul>
 </template>
@@ -32,6 +32,7 @@ ul {
   list-style: none;
   padding: 20px;
   margin: 0;
+  height: 231px;
 }
 
 li {

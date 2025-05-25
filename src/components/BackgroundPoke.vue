@@ -25,6 +25,8 @@
   width: 100%;
   height: 220px;
   overflow: hidden;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .background-image {
