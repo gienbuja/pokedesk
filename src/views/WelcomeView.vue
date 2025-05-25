@@ -26,6 +26,7 @@ import BtnPoke from '@/components/BtnPoke.vue';
   justify-content: center;
   text-align: center;
   height: 100dvh;
+  gap: 30px;
 }
 
 .image {
@@ -41,7 +42,6 @@ h1 {
   letter-spacing: 0%;
   text-align: center;
   vertical-align: middle;
-  margin-top: 40px;
 }
 
 p {
@@ -51,7 +51,6 @@ p {
   line-height: 150%;
   letter-spacing: 0%;
   text-align: center;
-  margin-top: 30px;
   margin-left: 30px;
   margin-right: 30px;
   min-width: 315px;

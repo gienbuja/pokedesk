@@ -1,3 +1,15 @@
+<script setup lang="ts">
+import type { Pokemon } from '@/types';
+import type { PropType } from 'vue';
+
+defineProps({
+  favoritePokemons: {
+    type: Array as PropType<Array<Pokemon>>,
+    required: true
+  }
+})
+</script>
+
 <template>
   <div class="loading-view">
     <svg width="106" height="106" viewBox="0 0 106 106" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -16,9 +28,9 @@
         stroke-linecap="round" stroke-linejoin="round" />
       <circle cx="53.0001" cy="53.0004" r="10.3852" stroke="#808080" stroke-width="2" />
     </svg>
-    <!-- <span>
-      loading
-    </span> -->
+    <span>
+      {{ favoritePokemons.length }}
+    </span>
   </div>
 </template>
 

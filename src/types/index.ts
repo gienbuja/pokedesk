@@ -19,7 +19,7 @@ export interface Sprites {
 export interface Pokemon {
   name: string
   url: string
-  favorite: boolean
+  favorite?: boolean | undefined
   id: number
   weight: number
   height: number
