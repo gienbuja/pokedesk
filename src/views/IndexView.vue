@@ -18,16 +18,13 @@ const allPokemons = ref<Array<Pokemon>>([]);
 const pokemonStore = usePokemonStore();
 
 const simulateLoading = () => {
-  const interval = setInterval(() => {
-    if (loading.value < 100) {
-      loading.value += Math.floor(Math.random() * 10) + 1;
-      if (loading.value > 100) {
-        loading.value = 100;
-      }
-    } else {
-      clearInterval(interval);
+  const intervalId = setInterval(() => {
+    loading.value += 10;
+    if (loading.value >= 100) {
+      loading.value = 100;
+      clearInterval(intervalId);
     }
-  }, 200);
+  }, 1200);
 };
 
 const fetchPokemonDetails = async (pokemon: Pokemon) => {
@@ -86,9 +83,6 @@ function clearFilters() {
 <template>
   <div v-if="loading < 100" class="loading">
     <LoaderIcon />
-    <div v-if="loading > 0 && loading < 100">
-      Cargando: {{ loading }}%
-    </div>
   </div>
   <div v-else class="index-container">
     <div class="index-view">
