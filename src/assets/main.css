@@ -1,5 +1,4 @@
 @import './base.css';
-@import 'tailwindcss';
 
 .lato-thin {
   font-family: 'Lato', sans-serif;
@@ -59,4 +58,34 @@
   font-family: 'Lato', sans-serif;
   font-weight: 900;
   font-style: italic;
+}
+
+button,
+input[type='button'],
+input[type='submit'],
+input[type='reset'] {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+button:focus {
+  outline: none;
+}
+
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  margin: 0;
+  padding: 0;
 }

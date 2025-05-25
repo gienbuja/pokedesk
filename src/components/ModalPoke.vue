@@ -11,7 +11,7 @@
         <PokemonDetailsList :pokemon="pokemon" />
 
         <span class="footer-modal">
-          <BtnPoke label="Share to my friends" />
+          <BtnPoke label="Share to my friends" @click="copyPokemonToClipboard(pokemon)" />
           <button @click.stop="handleToggleFavorite(pokemon)">
             <FavoriteRoundedIcon :favorite="isFavorite(pokemon)" />
           </button>
@@ -30,10 +30,8 @@ import PokemonDetailsList from './PokemonDetailsList.vue';
 import BtnPoke from './BtnPoke.vue';
 import FavoriteRoundedIcon from './icons/FavoriteRoundedIcon.vue';
 import { usePokemonStore } from '@/stores/pokemon.store';
-// import { ref } from 'vue';
 
 const pokemonStore = usePokemonStore()
-// const pokemonCry = ref<HTMLAudioElement | null>(null)
 
 
 defineProps<{
@@ -54,6 +52,19 @@ const handleToggleFavorite = (pokemon: Pokemon) => {
 
 const isFavorite = (pokemon: Pokemon) => {
   return pokemonStore.isFavorite(pokemon.name);
+};
+
+const copyPokemonToClipboard = (pokemon: Pokemon) => {
+  const pokemonData = [
+    `Name: ${pokemon.name}`,
+    `ID: ${pokemon.id}`,
+    `Type(s): ${pokemon.types.map(t => t.type.name).join(', ')}`,
+    `Height: ${pokemon.height / 10}`,
+    `Weight: ${pokemon.weight / 10}`
+  ].join('\n');
+  navigator.clipboard.writeText(pokemonData)
+    .then(() => alert('Pokémon copied to the clipboard!'))
+    .catch(err => console.error('Copy error:', err));
 };
 
 </script>
