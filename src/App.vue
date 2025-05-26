@@ -3,16 +3,13 @@ import { onMounted, ref } from 'vue'
 
 const backgroundAudio = ref<HTMLAudioElement | null>(null)
 
-onMounted(() => {
+document.addEventListener('click', () => {
   if (backgroundAudio.value) {
-    backgroundAudio.value.volume = 0.1
-    backgroundAudio.value.play().catch(error => {
-      console.log('La reproducción automática fue bloqueada:', error)
-    })
+    backgroundAudio.value.currentTime = 0.1;
+    backgroundAudio.value.play();
   }
-})
+}, { once: true });
 onMounted(() => {
-  // Prepara el api para reproducir sonidos
   fetch(`https://pokedex-api-sounds.onrender.com/`);
 })
 </script>

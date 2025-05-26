@@ -7,14 +7,20 @@
     <p>
       The digital encyclopedia created by Professor Oak is an invaluable tool to Trainers in the Pokémon world.
     </p>
-    <RouterLink to="/index">
-      <BtnPoke label="Get started" />
-    </RouterLink>
+    <span>
+      <BtnPoke label="Get started" @click="goToIndex" />
+    </span>
   </div>
 </template>
 <script setup lang="ts">
 import WelcomeImage from '@/components/icons/WelcomeImage.vue';
 import BtnPoke from '@/components/BtnPoke.vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+function goToIndex() {
+  router.push('/index');
+}
 
 </script>
 
