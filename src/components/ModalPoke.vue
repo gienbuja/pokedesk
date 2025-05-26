@@ -54,14 +54,14 @@ const isFavorite = (pokemon: Pokemon) => {
   return pokemonStore.isFavorite(pokemon.name);
 };
 
-const copyPokemonToClipboard = (pokemon: Pokemon) => {
+function copyPokemonToClipboard(pokemon: Pokemon){
   const pokemonData = [
     `Name: ${pokemon.name}`,
     `ID: ${pokemon.id}`,
     `Type(s): ${pokemon.types?.map(t => t.type.name).join(', ')}`,
     `Height: ${pokemon.height ? pokemon.height / 10 : ''}`,
     `Weight: ${pokemon.weight ? pokemon.weight / 10 : ''}`
-  ].join('\n');
+  ].join(', ');
   navigator.clipboard.writeText(pokemonData)
     .then(() => alert('Pokémon copied to the clipboard!'))
     .catch(err => console.error('Copy error:', err));
