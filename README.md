@@ -52,6 +52,7 @@ npm run dev
 
 ## Estructura del proyecto
 
+```bash
 src/
 ├── components/ # Componentes reutilizables
 │ ├── BackgroundPoke.vue
@@ -77,6 +78,7 @@ src/
 └── views/ # Vistas principales
 ├── IndexView.vue
 └── WelcomeView.vue
+```
 
 ## Licencia
 
@@ -87,7 +89,7 @@ Este proyecto está bajo la licencia MIT. Consulta el archivo [LICENSE](LICENSE)
 Este proyecto utiliza las siguientes APIs:
 
 - [PokéAPI](https://pokeapi.co/) - Para obtener información detallada sobre Pokémon
-- [Pokedex API - Sonidos Pokémon](https://github.com/RodXorDevX/pokedex-api-sounds) (https://pokedex-api-sounds.onrender.com) - Para los sonidos de Pokémon
+- [Pokedex API - Sonidos Pokémon -Repo](https://github.com/RodXorDevX/pokedex-api-sounds) [Pokedex API - Sonidos Pokémon -API](https://pokedex-api-sounds.onrender.com) - Para los sonidos de Pokémon
 
 ## Créditos
 
