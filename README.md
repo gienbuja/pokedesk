@@ -38,6 +38,11 @@ Pokedesk es una aplicación web que te permite explorar información detallada s
 
 1. Clona el repositorio
 
+```bash
+git clone https://github.com/gienbuja/pokedesk.git
+cd pokedesk
+```
+
 2. Instala las dependencias:
 
 ```bash
@@ -83,7 +88,7 @@ src/
 
 ## Licencia
 
-Este proyecto está bajo la licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está bajo la licencia MIT. Consulta el archivo [MIT](https://choosealicense.com/licenses/mit/) para más detalles.
 
 ## Agradecimientos
 
