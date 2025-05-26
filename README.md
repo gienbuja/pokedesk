@@ -97,6 +97,8 @@ Este proyecto utiliza las siguientes APIs:
 - [PokéAPI](https://pokeapi.co/) - Para obtener información detallada sobre Pokémon
 - Pokedex API - Sonidos Pokémon [Repositorio](https://github.com/RodXorDevX/pokedex-api-sounds) [API](https://pokedex-api-sounds.onrender.com) - Para los sonidos de Pokémon
 
+Esta basado en el diseño publicado en [POKEDEX](https://www.figma.com/design/RxextQHeFs98SQKdpTrahk/Pok%C3%A9dex)
+
 ## Créditos
 
 Este proyecto fue desarrollado con ❤️ por Giovany Buelvas para todos!
