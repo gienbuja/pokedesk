@@ -34,6 +34,13 @@ Pokedesk es una aplicación web que te permite explorar información detallada s
 - Pinia (para gestión de estado)
 - Vite (para construcción)
 
+
+## Despliegue
+
+El proyecto está desplegado en GitHub Pages y puede consultarse en:
+
+🔗 [Ver aplicación en vivo](https://gienbuja.github.io/pokedesk/)
+
 ## Instalación
 
 1. Clona el repositorio
