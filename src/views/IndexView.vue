@@ -68,7 +68,8 @@ async function pokemonClick(pokemon: Pokemon) {
   const details = await pokemonStore.updatePokemonDetails(pokemon.url);
   if (details) {
     pokemonDetails.value = details;
-    playPokemonCry(details.id);
+    if (details.id)
+      playPokemonCry(details.id);
   }
 }
 

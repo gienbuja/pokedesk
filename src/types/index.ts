@@ -24,10 +24,10 @@ export interface Cries {
 export interface Pokemon {
   name: string
   url: string
-  id: number
-  weight: number
-  height: number
-  types: Type[]
-  sprites: Sprites
-  cries: Cries
+  id?: number
+  weight?: number
+  height?: number
+  types?: Type[]
+  sprites?: Sprites
+  cries?: Cries
 }
