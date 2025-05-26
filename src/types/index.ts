@@ -1,17 +1,17 @@
 export interface TypeDetail {
   name: string
-  url: string
+  url?: string
 }
 export interface Type {
-  slot: number
+  slot?: number
   type: TypeDetail
 }
 export interface Sprites {
-  front_default: string
+  front_default?: string
   other: {
     'official-artwork': {
       front_default: string
-      front_shiny: string
+      front_shiny?: string
     }
   }
 }

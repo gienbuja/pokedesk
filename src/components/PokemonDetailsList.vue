@@ -22,7 +22,7 @@ defineProps<{
     </li>
     <li>
       <span>Types:</span>
-      <span>{{pokemon.types.map(type => type.type.name).join(', ')}}</span>
+      <span>{{pokemon.types?.map(type => type.type.name).join(', ')}}</span>
     </li>
   </ul>
 </template>

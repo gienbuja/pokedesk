@@ -8,7 +8,7 @@ defineProps<{
 
 <template>
   <span class="image-container">
-    <img :src="pokemon.sprites.other['official-artwork'].front_shiny" :alt="pokemon.name">
+    <img :src="pokemon.sprites?.other['official-artwork'].front_shiny" :alt="pokemon.name">
   </span>
 </template>
 

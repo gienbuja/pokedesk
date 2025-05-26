@@ -58,9 +58,9 @@ const copyPokemonToClipboard = (pokemon: Pokemon) => {
   const pokemonData = [
     `Name: ${pokemon.name}`,
     `ID: ${pokemon.id}`,
-    `Type(s): ${pokemon.types.map(t => t.type.name).join(', ')}`,
-    `Height: ${pokemon.height / 10}`,
-    `Weight: ${pokemon.weight / 10}`
+    `Type(s): ${pokemon.types?.map(t => t.type.name).join(', ')}`,
+    `Height: ${pokemon.height ? pokemon.height / 10 : ''}`,
+    `Weight: ${pokemon.weight ? pokemon.weight / 10 : ''}`
   ].join('\n');
   navigator.clipboard.writeText(pokemonData)
     .then(() => alert('Pokémon copied to the clipboard!'))

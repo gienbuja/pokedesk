@@ -47,7 +47,7 @@ const props = defineProps({
   }
 })
 const getPokemonImages = async () => {
-  return props.favoritePokemons.map(pokemon => pokemon.sprites.other['official-artwork'].front_shiny);
+  return props.favoritePokemons.map(pokemon => pokemon.sprites?.other['official-artwork'].front_shiny);
 };
 
 const pokemonStyle = (pokemon: PokemonImage) => ({
