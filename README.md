@@ -66,12 +66,13 @@ src/
 │ ├── PokemonDetailsList.vue
 │ ├── PokemonImage.vue
 │ ├── SearchPoke.vue
-│ ├── **tests**/
 │ └── icons/
 ├── services/ # Lógica de servicios
+│ ├── **tests**/
 │ ├── pokemon.service.ts # Maneja toda la lógica de comunicación con la API y caché
 │ └── ui.service.ts # Maneja toda la lógica para la interfaz de usuario
 ├── stores/ # Gestión de estado
+│ ├── **tests**/
 │ └── pokemon.store.ts # Gestión de estado de la aplicación
 ├── types/ # Tipos TypeScript
 │ └── index.ts
@@ -89,11 +90,11 @@ Este proyecto está bajo la licencia MIT. Consulta el archivo [LICENSE](LICENSE)
 Este proyecto utiliza las siguientes APIs:
 
 - [PokéAPI](https://pokeapi.co/) - Para obtener información detallada sobre Pokémon
-- [Pokedex API - Sonidos Pokémon -Repo](https://github.com/RodXorDevX/pokedex-api-sounds) [Pokedex API - Sonidos Pokémon -API](https://pokedex-api-sounds.onrender.com) - Para los sonidos de Pokémon
+- Pokedex API - Sonidos Pokémon [Repositorio](https://github.com/RodXorDevX/pokedex-api-sounds) [API](https://pokedex-api-sounds.onrender.com) - Para los sonidos de Pokémon
 
 ## Créditos
 
-Este proyecto fue desarrollado con ❤️ por Giovany Buelvas.
+Este proyecto fue desarrollado con ❤️ por Giovany Buelvas para todos!
 
 ## Un especial agradecimiento a:
 
